@@ -21,14 +21,14 @@ const Main = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
      
-      <header className="w-full bg-white shadow-sm">
-        <NavBar />
+      <header className="w-full bg-black shadow-sm">
+        <NavBar setActiveComponent={setActiveMenu} />
       </header>
 
     
       <div className="flex flex-1">
        
-        <aside className="w-64 bg-white border-r border-gray-200">
+        <aside className="w-64 bg-white border-r md:block hidden border-gray-200">
           <div className="p-4">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Menu</h2>
             <nav className="space-y-2">
@@ -58,7 +58,7 @@ const Main = () => {
         </aside>
 
       
-        <main className="flex-1 p-6">
+        <main className="flex-1 md:p-6">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">{activeMenu}</h1>
             {activeComponent}

@@ -101,20 +101,20 @@ const Board = () => {
   });
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Task Board</h1>
-        <p className="text-gray-600">Manage and track your project tasks</p>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800">Task Board</h1>
+        <p className="text-sm md:text-base text-gray-600">Manage and track your project tasks</p>
       </div>
       
-      <div className="mb-6 flex flex-wrap items-center gap-4">
-        <div>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex-1">
           <label htmlFor="filterStatus" className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
           <select 
             id="filterStatus" 
             value={filterStatus} 
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Tasks</option>
             <option value="todo">To Do</option>
@@ -123,13 +123,13 @@ const Board = () => {
           </select>
         </div>
         
-        <div>
+        <div className="flex-1">
           <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
           <select 
             id="sortBy" 
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="dueDate">Due Date</option>
             <option value="priority">Priority</option>
@@ -137,7 +137,8 @@ const Board = () => {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      {/* Desktop/Tablet Table View */}
+      <div className="hidden lg:block bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div className="grid grid-cols-12 gap-4 p-4 bg-gray-50 border-b border-gray-200">
           <div className="col-span-5 font-medium text-gray-700">Task</div>
           <div className="col-span-2 font-medium text-gray-700">Assignee</div>
@@ -175,7 +176,7 @@ const Board = () => {
                 </div>
                 
                 <div className="col-span-1 flex items-center">
-                  <span className={`px-2 py-1 text-xs rounded-md ${getPriorityColor(task.priority)}`}>
+                  <span className={`px-2 py-1 text-xs rounded-md capitalize ${getPriorityColor(task.priority)}`}>
                     {task.priority}
                   </span>
                 </div>
@@ -188,6 +189,60 @@ const Board = () => {
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="lg:hidden space-y-4">
+        {sortedTasks.length === 0 ? (
+          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">
+            No tasks match your filters
+          </div>
+        ) : (
+          sortedTasks.map((task) => (
+            <div key={task.id} className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow">
+              <div className="space-y-3">
+                <div>
+                  <h3 className="font-medium text-gray-800 text-lg">{task.title}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  {task.tags.map((tag) => (
+                    <span key={tag} className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500 font-medium block">Assignee</span>
+                    <span className="text-gray-700">{task.assignee}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 font-medium block">Due Date</span>
+                    <span className="text-gray-700">{new Date(task.dueDate).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-gray-500 font-medium text-sm block mb-1">Priority</span>
+                    <span className={`px-2 py-1 text-xs rounded-md capitalize ${getPriorityColor(task.priority)}`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 font-medium text-sm block mb-1">Status</span>
+                    <span className={`px-2 py-1 text-xs rounded-md ${getStatusColor(task.status)}`}>
+                      {getStatusLabel(task.status)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>
