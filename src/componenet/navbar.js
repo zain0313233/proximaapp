@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import { useRouter } from 'next/navigation';
 import { Settings, LogOut, CheckSquare, Home, Layers, BarChart2, X, Menu } from 'lucide-react'
 import AppHome from "./Home";
 import Board from "./bord";
@@ -8,6 +9,7 @@ import AppSettings from "./appsetting";
 
 const Navbar = ({ setActiveComponent }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   const menuItems = [
     { name: "Dashboard", icon: <Home size={20} />, component: <AppHome /> },
@@ -58,6 +60,9 @@ const Navbar = ({ setActiveComponent }) => {
       </div>
 
       <div className="flex items-center space-x-5">
+        <button className="hover:text-blue-400 transition-colors text-gray-200"  onClick={() => router.push('/signup')}>
+SignUp
+        </button>
         <button className="hover:text-blue-400 transition-colors">
           <Settings className="w-5 h-5" />
         </button>

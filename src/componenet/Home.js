@@ -59,8 +59,8 @@ const Home = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Task Management Board</h1>
-        <p className="text-gray-600">Drag and drop tasks between columns to update their status</p>
+        <h1 className="text-2xl font-bold text-gray-200">Task Management Board</h1>
+        <p className="text-gray-200">Drag and drop tasks between columns to update their status</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

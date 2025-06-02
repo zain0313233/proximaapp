@@ -46,8 +46,8 @@ const Analytics = () => {
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
-        <p className="text-sm md:text-base text-gray-600">Task performance and productivity metrics</p>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-200">Analytics Dashboard</h1>
+        <p className="text-sm md:text-base text-gray-200">Task performance and productivity metrics</p>
       </div>
       
       <div className="mb-6">

@@ -348,8 +348,8 @@ const AppSettings = () => {
   return (
     <div className="p-4 sm:p-6 min-h-screen bg-gray-50 sm:bg-transparent">
       <div className="mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Settings</h1>
-        <p className="text-gray-600 text-sm sm:text-base">Customize your application preferences</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-200">Settings</h1>
+        <p className="text-gray-200 text-sm sm:text-base">Customize your application preferences</p>
       </div>
       
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">

@@ -103,13 +103,14 @@ const Board = () => {
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800">Task Board</h1>
-        <p className="text-sm md:text-base text-gray-600">Manage and track your project tasks</p>
+
+        <h1 className="text-xl md:text-2xl font-bold text-gray-200">Task Board</h1>
+        <p className="text-sm md:text-base text-gray-200">Manage and track your project tasks</p>
       </div>
       
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
-          <label htmlFor="filterStatus" className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+          <label htmlFor="filterStatus" className="block text-sm font-medium text-gray-200 mb-1">Filter by Status</label>
           <select 
             id="filterStatus" 
             value={filterStatus} 
