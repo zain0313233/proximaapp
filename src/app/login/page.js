@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import { useRouter } from 'next/navigation';
 import {
   User,
@@ -23,14 +24,9 @@ const Main = () => {
     email: "",
     password: ""
   });
-
+const { login } = useUser();
   const router = useRouter();
 
-  const roleIcons = {
-    user: <UserCheck className="w-5 h-5" />,
-    manager: <Shield className="w-5 h-5" />,
-    admin: <Crown className="w-5 h-5" />
-  };
 
   const validator = () => {
     const newErrors = {};
@@ -103,11 +99,21 @@ const Main = () => {
         }
       );
 
+
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+       const data = response.data;
+      if(data.success && data.access_token){ 
+       const { user, access_token } = response.data;
+       login(user, access_token);
+        router.push("/");
+      }
+      else{
+        throw new Error("Login failed. Please check your credentials.");
+      }
+     
 
-      const data = response.data;
   
     console.log("Success:", data);
       alert("Account created successfully!");

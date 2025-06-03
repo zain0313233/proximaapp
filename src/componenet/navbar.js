@@ -1,15 +1,30 @@
 "use client"
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useRouter } from 'next/navigation';
+import { useUser } from "@/context/UserContext";
 import { Settings, LogOut, CheckSquare, Home, Layers, BarChart2, X, Menu } from 'lucide-react'
 import AppHome from "./Home";
 import Board from "./bord";
+
 import Analytics from "./analytic";
 import AppSettings from "./appsetting";
 
 const Navbar = ({ setActiveComponent }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const getInitials = (name) => {
+  if (!name) return '';
+  const names = name.trim().split(' ');
+  if (names.length === 1) return names[0][0].toUpperCase();
+  return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+};
+
+const { user, accessToken } = useUser();
+// useEffect(() => {
+//     if (!user || !accessToken) {
+//       router.push('/login');
+//     }
+//   }, [user, accessToken, router]);
 
   const menuItems = [
     { name: "Dashboard", icon: <Home size={20} />, component: <AppHome /> },
@@ -17,6 +32,8 @@ const Navbar = ({ setActiveComponent }) => {
     { name: "Analytics", icon: <BarChart2 size={20} />, component: <Analytics /> },
     { name: "Settings", icon: <Settings size={20} />, component: <AppSettings /> }
   ];
+ 
+
 
   const handleMenuClick = (component) => {
     setActiveComponent(component);
@@ -63,8 +80,8 @@ const Navbar = ({ setActiveComponent }) => {
         <button className="hover:text-blue-400 transition-colors text-gray-200"  onClick={() => router.push('/signup')}>
 SignUp
         </button>
-        <button className="hover:text-blue-400 transition-colors">
-          <Settings className="w-5 h-5" />
+        <button className="bg-white rounded-full  text-black font-semibold w-auto h-auto flex text-sm items-center justify-center hover:bg-gray-200 p-1">
+           {getInitials(user?.name)}
         </button>
         <button className="hover:text-blue-400 transition-colors">
           <LogOut className="w-5 h-5" />
