@@ -15,19 +15,16 @@ import {
 import axios from "axios";
 const Main = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("user");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    password: "",
-    confirmPassword: "",
-    role: "user"
+    password: ""
   });
+
+  const router = useRouter();
 
   const roleIcons = {
     user: <UserCheck className="w-5 h-5" />,
@@ -38,11 +35,7 @@ const Main = () => {
   const validator = () => {
     const newErrors = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    } else if (formData.username.length < 3) {
-      newErrors.username = "Username must be at least 3 characters";
-    }
+   
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -58,15 +51,9 @@ const Main = () => {
       newErrors.password = "Password must contain uppercase, lowercase, and number";
     }
 
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.confirmPassword !== formData.password) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
+   
 
-    if (!formData.role) {
-      newErrors.role = "Please select a role";
-    }
+   
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -91,7 +78,6 @@ const Main = () => {
     
     const updatedFormData = {
       ...formData,
-      role: selectedRole
     };
     setFormData(updatedFormData);
 
@@ -104,13 +90,11 @@ const Main = () => {
     const payload = {
       email: updatedFormData.email,
       password: updatedFormData.password,
-      name: updatedFormData.username,
-      role: selectedRole
     };
 
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/auth/signup`,
+        `http://localhost:3001/api/auth/signin`,
         payload,
         {
           headers: {
@@ -124,6 +108,7 @@ const Main = () => {
       }
 
       const data = response.data;
+  
     console.log("Success:", data);
       alert("Account created successfully!");
       
@@ -167,28 +152,12 @@ const Main = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
-              Create Account
+                Login to Your Account
             </h2>
             <p className="text-gray-600">Fill in your details to get started</p>
           </div>
 
           <div className="space-y-6">
-            <div className="relative group">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" />
-              <input
-                type="text"
-                value={formData.username}
-                onChange={e => handleInputChange('username', e.target.value)}
-                placeholder="Username"
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
-              />
-              {errors.username && (
-                <p className="text-red-600 text-xs mt-1 font-medium">
-                  {errors.username}
-                </p>
-              )}
-            </div>
-
             <div className="relative group">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" />
               <input
@@ -228,69 +197,6 @@ const Main = () => {
               )}
             </div>
 
-            <div className="relative group">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" />
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={e => handleInputChange('confirmPassword', e.target.value)}
-                placeholder="Confirm Password"
-                className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
-              >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-              {errors.confirmPassword && (
-                <p className="text-red-600 text-xs mt-1 font-medium">
-                  {errors.confirmPassword}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Choose your role
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {["member", "manager", "admin"].map(role => (
-                  <label key={role} className="relative cursor-pointer">
-                    <input
-                      type="radio"
-                      name="role"
-                      value={role}
-                      checked={selectedRole === role}
-                      onChange={e => {
-                        setSelectedRole(e.target.value);
-                        handleInputChange('role', e.target.value);
-                      }}
-                      className="sr-only"
-                    />
-                    <div
-                      className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200 ${
-                        selectedRole === role
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300 hover:bg-gray-100"
-                      }`}
-                    >
-                      {roleIcons[role]}
-                      <span className="text-sm font-medium mt-2 capitalize">
-                        {role}
-                      </span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-              {errors.role && (
-                <p className="text-red-600 text-xs mt-1 font-medium">
-                  {errors.role}
-                </p>
-              )}
-            </div>
-
             <button
   onClick={handleSubmit}
   disabled={isSubmitting}
@@ -299,21 +205,21 @@ const Main = () => {
   {isSubmitting ? (
     <>
       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-      Creating Account...
+      Loging in...
     </>
   ) : (
-    'Create Account'
+    'Login'
   )}
 </button>
 
             <div className="text-center">
               <p className="text-gray-600">
-                Already have an account?
+                Do Not have an account?
                 <a
-                  href="/login"
+                  href="#"
                   className="text-blue-600 hover:text-blue-700 font-medium ml-1 hover:underline"
                 >
-                  Sign In
+                  Sign Up
                 </a>
               </p>
             </div>
