@@ -49,32 +49,42 @@ const Home = () => {
     setDragSource(column);
   };
 
-  const handleDrop = (targetColumn) => {
-    if (!draggedTask || dragSource === targetColumn) return;
-    try{
-      const response= axiox.put(`http://localhost:3001/api/tasks/status/${draggedTask.id}`, {
+  const handleDrop = async (targetColumn) => {
+  if (!draggedTask || dragSource === targetColumn) return;
+  
+  try {
+    const response = await axiox.put(
+      `http://localhost:3001/api/tasks/status/${draggedTask.id}`, 
+      {
         status: targetColumn
-      }, {
+      }, 
+      {
         headers: {
           "Content-Type": "application/json"
         }
-      });
-     if(response.status === "success"){
-        const updatedTask={...tasks}
-        updatedTask[dragSource]=updatedTask[dragSource].filter((task)=> task.id !==draggedTask.id);
-        updatedTask[targetColumn].push({
-          ...draggedTask,
-          status: targetColumn
-        });
-        setTasks(updatedTask);
-        console.log("Task status updated successfully:", response.data.message);
       }
-
-
-    }catch (error) {
-      console.error("Error updating task status:", error);
+    );
+    
+    
+    if (response.status >= 200 && response.status < 300) {
+      const updatedTask = { ...tasks };
+      updatedTask[dragSource] = updatedTask[dragSource].filter((task) => task.id !== draggedTask.id);
+      updatedTask[targetColumn].push({
+        ...draggedTask,
+        status: targetColumn
+      });
+      setTasks(updatedTask);
+      console.log("Task status updated successfully:", response.data);
+    } else {
+      console.error("Failed to update task status:", response.data);
     }
-  };
+  } catch (error) {
+    console.error("Error updating task status:", error);
+  
+  }
+  setDraggedTask(null);
+  setDragSource(null);
+};
 
   const getPriorityColor = (priority) => {
     switch (priority) {
