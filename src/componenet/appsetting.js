@@ -201,7 +201,7 @@ const AppSettings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h3 className="text-sm font-medium text-gray-800">Mention Alerts</h3>
-          <p className="text-xs text-gray-500">Get notified when you're mentioned</p>
+          <p className="text-xs text-gray-500">Get notified when you are mentioned</p>
         </div>
         <button 
           onClick={() => handleToggle('notifications', 'mentionAlerts')}

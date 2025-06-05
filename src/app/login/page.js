@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useUser } from "@/context/UserContext";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import {
   User,
   Mail,
@@ -24,14 +24,11 @@ const Main = () => {
     email: "",
     password: ""
   });
-const { login } = useUser();
+  const { login } = useUser();
   const router = useRouter();
-
 
   const validator = () => {
     const newErrors = {};
-
-   
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -44,25 +41,22 @@ const { login } = useUser();
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = "Password must contain uppercase, lowercase, and number";
+      newErrors.password =
+        "Password must contain uppercase, lowercase, and number";
     }
-
-   
-
-   
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value
     }));
-    
+
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [field]: ""
       }));
@@ -71,9 +65,9 @@ const { login } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const updatedFormData = {
-      ...formData,
+      ...formData
     };
     setFormData(updatedFormData);
 
@@ -85,7 +79,7 @@ const { login } = useUser();
 
     const payload = {
       email: updatedFormData.email,
-      password: updatedFormData.password,
+      password: updatedFormData.password
     };
 
     try {
@@ -94,30 +88,25 @@ const { login } = useUser();
         payload,
         {
           headers: {
-           'Content-Type': 'application/json'
+            "Content-Type": "application/json"
           }
         }
       );
 
-
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-       const data = response.data;
-      if(data.success && data.access_token){ 
-       const { user, access_token } = response.data;
-       login(user, access_token);
+      const data = response.data;
+      if (data.success && data.access_token) {
+        const { user, access_token } = response.data;
+        login(user, access_token);
         router.push("/");
-      }
-      else{
+      } else {
         throw new Error("Login failed. Please check your credentials.");
       }
-     
 
-  
-    console.log("Success:", data);
+      console.log("Success:", data);
       alert("Account created successfully!");
-      
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while creating your account. Please try again.");
@@ -158,7 +147,7 @@ const { login } = useUser();
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Login to Your Account
+              Login to Your Account
             </h2>
             <p className="text-gray-600">Fill in your details to get started</p>
           </div>
@@ -169,7 +158,7 @@ const { login } = useUser();
               <input
                 type="email"
                 value={formData.email}
-                onChange={e => handleInputChange('email', e.target.value)}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="Email Address"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -185,7 +174,7 @@ const { login } = useUser();
               <input
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
-                onChange={e => handleInputChange('password', e.target.value)}
+                onChange={(e) => handleInputChange("password", e.target.value)}
                 placeholder="Password"
                 className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -194,7 +183,11 @@ const { login } = useUser();
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
               {errors.password && (
                 <p className="text-red-600 text-xs mt-1 font-medium">
@@ -204,19 +197,19 @@ const { login } = useUser();
             </div>
 
             <button
-  onClick={handleSubmit}
-  disabled={isSubmitting}
-  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
->
-  {isSubmitting ? (
-    <>
-      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-      Loging in...
-    </>
-  ) : (
-    'Login'
-  )}
-</button>
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                  Loging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </button>
 
             <div className="text-center">
               <p className="text-gray-600">

@@ -18,52 +18,52 @@ const CompleteRegistration = () => {
     industry: "",
     phone: "",
     address: "",
-    website: "",
+    website_url: "",
     max_members: 10
   });
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith("org_")) {
-      const orgField = name.replace("org_", "");
-      setFormData((prev) => ({
-        ...prev,
-        organization: {
-          ...prev.organization,
-          [orgField]: value
-        }
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+  const handleInputChange = (field,value) => {
+   setFormData(prev =>({
+      ...prev,
+      [field]: value
+    }));
+    
   };
-
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const payload = {
+      ...formData,
+      owner_id: user?.id || "",
+    }
+
     try {
       const response = await axiox.post(
-        "http://localhost:3001/api/organizations/",
-        {
-          ...formData,
-          createOrganization: createOrg
-        },
+        "http://localhost:3001/api/organizations/",payload,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+           'Content-Type': 'application/json'
           }
         }
       );
-
-      router.push("/dashboard");
+      if (response.status === 201) {
+        console.log("Organization created successfully:", response.data);
+         setIsSubmitted(true);
+ await delay(5000);
+      router.push("/");
+      }
+       const data = response.data;
+        console.log("Success:", data);
+       
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
@@ -71,7 +71,7 @@ const CompleteRegistration = () => {
     }
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 2)); // Changed from 3 to 2
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   return (
@@ -132,7 +132,7 @@ const CompleteRegistration = () => {
             </div>
 
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-              <form onSubmit={handleSubmit} className="p-8">
+              <div className="p-8">
                
 
                 {step === 1 && (
@@ -154,7 +154,7 @@ const CompleteRegistration = () => {
                               type="text"
                               name="org_name"
                               value={formData.name}
-                              onChange={handleInputChange}
+                              onChange={e=> handleInputChange("name", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                               placeholder="Enter organization name"
                               required={createOrg}
@@ -169,7 +169,7 @@ const CompleteRegistration = () => {
                               type="text"
                               name="org_type"
                               value={formData.type}
-                              onChange={handleInputChange}
+                              onChange={e=> handleInputChange("type", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                               placeholder="e.g., Tech Startup, Consulting Firm"
                               required={createOrg}
@@ -185,7 +185,7 @@ const CompleteRegistration = () => {
                               type="text"
                               name="org_name"
                               value={formData.phone}
-                              onChange={handleInputChange}
+                              onChange={e=> handleInputChange("phone", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                               placeholder="Enter organization name"
                               required={createOrg}
@@ -199,7 +199,7 @@ const CompleteRegistration = () => {
                             <select
                               name="status"
                               value={formData.status}
-                              onChange={handleInputChange}
+                              onChange={e=> handleInputChange("status", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                               required={createOrg}
                             >
@@ -220,7 +220,7 @@ const CompleteRegistration = () => {
                               type="text"
                               name="org_industry"
                               value={formData.industry}
-                              onChange={handleInputChange}
+                              onChange={e=> handleInputChange("industry", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                               placeholder="e.g., Technology, Healthcare"
                             />
@@ -233,8 +233,8 @@ const CompleteRegistration = () => {
                             <input
                               type="url"
                               name="org_website"
-                              value={formData.website}
-                              onChange={handleInputChange}
+                              value={formData.website_url}
+                              onChange={e=> handleInputChange("website_url", e.target.value)}
                               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                               placeholder="https://example.com"
                             />
@@ -248,7 +248,7 @@ const CompleteRegistration = () => {
                           <textarea
                             name="org_description"
                             value={formData.description}
-                            onChange={handleInputChange}
+                            onChange={e=> handleInputChange("description", e.target.value)}
                             rows={3}
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                             placeholder="Brief description of your organization"
@@ -262,7 +262,7 @@ const CompleteRegistration = () => {
                           <textarea
                             name="org_address"
                             value={formData.address}
-                            onChange={handleInputChange}
+                            onChange={e=> handleInputChange("address", e.target.value)}
                             rows={2}
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                             placeholder="Organization address"
@@ -282,7 +282,7 @@ const CompleteRegistration = () => {
                     <div className="grid md:grid-cols-2 gap-8">
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">
-                          Personal Information
+                           Company Information
                         </h3>
                         <div className="space-y-3">
                           <div>
@@ -304,51 +304,38 @@ const CompleteRegistration = () => {
                             </p>
                           </div>
                           <div>
-                            <span className="text-sm text-gray-500">Role:</span>
+                            <span className="text-sm text-gray-500">Status:</span>
                             <p className="font-medium capitalize">
-                              {formData.role}
+                              {formData.status}
+                            </p>
+                          </div>
+                           <div>
+                            <span className="text-sm text-gray-500">Industry:</span>
+                            <p className="font-medium capitalize">
+                              {formData.industry}
+                            </p>
+                          </div>
+                           <div>
+                            <span className="text-sm text-gray-500">Website:</span>
+                            <p className="font-medium capitalize">
+                              {formData.website_url}
                             </p>
                           </div>
                         </div>
                       </div>
-
-                      {createOrg && (
-                        <div className="space-y-4">
-                          <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">
-                            Organization Details
-                          </h3>
-                          <div className="space-y-3">
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                Organization:
-                              </span>
-                              <p className="font-medium">{formData.name}</p>
-                            </div>
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                Type:
-                              </span>
-                              <p className="font-medium">{formData.type}</p>
-                            </div>
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                Industry:
-                              </span>
-                              <p className="font-medium">
-                                {formData.industry || "Not specified"}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                Website:
-                              </span>
-                              <p className="font-medium">
-                                {formData.website || "Not provided"}
-                              </p>
-                            </div>
+                      <div className="space-y-4 ">
+                        <div className="space-y-3">
+                           <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">
+                          Company Description
+                        </h3>
+                          <div>
+                            <span className="text-sm text-gray-500">Description:</span>
+                            <p className="font-medium capitalize">
+                              {formData.description}
+                            </p>
                           </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -363,7 +350,7 @@ const CompleteRegistration = () => {
                     Previous
                   </button>
 
-                  {step < 3 ? (
+                  {step < 2 ? (
                     <button
                       type="button"
                       onClick={nextStep}
@@ -373,7 +360,8 @@ const CompleteRegistration = () => {
                     </button>
                   ) : (
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handleSubmit}
                       disabled={loading}
                       className="px-8 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg hover:from-green-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                     >
@@ -383,12 +371,12 @@ const CompleteRegistration = () => {
                           <span>Completing...</span>
                         </>
                       ) : (
-                        <span>Complete Registration</span>
+                        <span>{isSubmitted ? "Registration Completed" : "Complete Registration"}</span>
                       )}
                     </button>
                   )}
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
@@ -407,7 +395,7 @@ const CompleteRegistration = () => {
                     to {
                         opacity: 1;
                         transform: translateY(0);
-                    }s
+                    }
                 }
             `}</style>
     </>

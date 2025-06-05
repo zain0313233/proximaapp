@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";;
+import { useRouter } from "next/navigation";
 import {
   User,
   Mail,
@@ -19,7 +19,9 @@ const Main = () => {
   const [selectedRole, setSelectedRole] = useState("user");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
+
 
   const [formData, setFormData] = useState({
     username: "",
@@ -55,7 +57,8 @@ const Main = () => {
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = "Password must contain uppercase, lowercase, and number";
+      newErrors.password =
+        "Password must contain uppercase, lowercase, and number";
     }
 
     if (!formData.confirmPassword) {
@@ -73,13 +76,13 @@ const Main = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value
     }));
-    
+
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [field]: ""
       }));
@@ -88,7 +91,7 @@ const Main = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const updatedFormData = {
       ...formData,
       role: selectedRole
@@ -114,7 +117,7 @@ const Main = () => {
         payload,
         {
           headers: {
-           'Content-Type': 'application/json'
+            "Content-Type": "application/json"
           }
         }
       );
@@ -124,9 +127,14 @@ const Main = () => {
       }
 
       const data = response.data;
-    console.log("Success:", data);
+
+      if (selectedRole === "admin" || selectedRole === "manager") {
+        router.push("/signup/complete-registration");
+      }else{
+        router.push("/login");
+      }
+      console.log("Success:", data);
       alert("Account created successfully!");
-      
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while creating your account. Please try again.");
@@ -178,7 +186,7 @@ const Main = () => {
               <input
                 type="text"
                 value={formData.username}
-                onChange={e => handleInputChange('username', e.target.value)}
+                onChange={(e) => handleInputChange("username", e.target.value)}
                 placeholder="Username"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -194,7 +202,7 @@ const Main = () => {
               <input
                 type="email"
                 value={formData.email}
-                onChange={e => handleInputChange('email', e.target.value)}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="Email Address"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -210,7 +218,7 @@ const Main = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
-                onChange={e => handleInputChange('password', e.target.value)}
+                onChange={(e) => handleInputChange("password", e.target.value)}
                 placeholder="Password"
                 className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -219,7 +227,11 @@ const Main = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
               {errors.password && (
                 <p className="text-red-600 text-xs mt-1 font-medium">
@@ -233,7 +245,9 @@ const Main = () => {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 value={formData.confirmPassword}
-                onChange={e => handleInputChange('confirmPassword', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("confirmPassword", e.target.value)
+                }
                 placeholder="Confirm Password"
                 className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white hover:bg-white"
               />
@@ -242,7 +256,11 @@ const Main = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
               {errors.confirmPassword && (
                 <p className="text-red-600 text-xs mt-1 font-medium">
@@ -256,16 +274,16 @@ const Main = () => {
                 Choose your role
               </label>
               <div className="grid grid-cols-3 gap-3">
-                {["member", "manager", "admin"].map(role => (
+                {["member", "manager", "admin"].map((role) => (
                   <label key={role} className="relative cursor-pointer">
                     <input
                       type="radio"
                       name="role"
                       value={role}
                       checked={selectedRole === role}
-                      onChange={e => {
+                      onChange={(e) => {
                         setSelectedRole(e.target.value);
-                        handleInputChange('role', e.target.value);
+                        handleInputChange("role", e.target.value);
                       }}
                       className="sr-only"
                     />
@@ -292,19 +310,19 @@ const Main = () => {
             </div>
 
             <button
-  onClick={handleSubmit}
-  disabled={isSubmitting}
-  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
->
-  {isSubmitting ? (
-    <>
-      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-      Creating Account...
-    </>
-  ) : (
-    'Create Account'
-  )}
-</button>
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </button>
 
             <div className="text-center">
               <p className="text-gray-600">
