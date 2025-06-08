@@ -9,7 +9,7 @@ const Home = () => {
   useEffect(() => {
     const featchData = async () => {
       const taskresponse = await axiox.get(
-        `http://localhost:3001/api/tasks/getByUser/${user?.id}`,
+        `http://localhost:3001/api/tasks/getUser/${user?.id}`,
         {
           headers: {
             "Content-Type": "application/json"
