@@ -63,13 +63,13 @@ const { user, accessToken } = useUser();
           </li>
           <li 
             className="hover:text-blue-400 transition-colors cursor-pointer"
-            // onClick={() => handleMenuClick(menuItems[2].component)}
+            onClick={() => router.push('/projects')}
           >
             Projects
           </li>
           <li 
             className="hover:text-blue-400 transition-colors cursor-pointer"
-            // onClick={() => handleMenuClick(menuItems[3].component)}
+            // onClick={() => router.push('/projects')}
           >
             Calendar
           </li>

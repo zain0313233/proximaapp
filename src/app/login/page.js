@@ -2,17 +2,7 @@
 import React, { useState } from "react";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import {
-  User,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  UserCheck,
-  Shield,
-  Crown,
-  Sparkles
-} from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 const Main = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,9 +53,29 @@ const Main = () => {
     }
   };
 
+  async function fetchOrganization(userId) {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/get-info/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let organization = null;
     const updatedFormData = {
       ...formData
     };
@@ -84,7 +94,7 @@ const Main = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/auth/signin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`,
         payload,
         {
           headers: {
@@ -93,13 +103,20 @@ const Main = () => {
         }
       );
 
+      const { user } = response.data;
+      const ownerid = user?.id;
+      const organization = await fetchOrganization(ownerid);
+
+      console.log('organization is ',organization)
+
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = response.data;
+
       if (data.success && data.access_token) {
         const { user, access_token } = response.data;
-        login(user, access_token);
+        login(user, access_token, organization);
         router.push("/");
       } else {
         throw new Error("Login failed. Please check your credentials.");
