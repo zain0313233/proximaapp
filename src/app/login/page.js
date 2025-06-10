@@ -53,13 +53,14 @@ const Main = () => {
     }
   };
 
-  async function fetchOrganization(userId) {
+  async function fetchOrganization(userId,accessToken) {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/get-info/${userId}`,
         {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${accessToken}`
           }
         }
       );
@@ -103,9 +104,9 @@ const Main = () => {
         }
       );
 
-      const { user } = response.data;
+      const { user,access_token} = response.data;
       const ownerid = user?.id;
-      const organization = await fetchOrganization(ownerid);
+      const organization = await fetchOrganization(ownerid,access_token);
 
       console.log('organization is ',organization)
 
@@ -123,7 +124,7 @@ const Main = () => {
       }
 
       console.log("Success:", data);
-      alert("Account created successfully!");
+      alert("Login successfully!");
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while creating your account. Please try again.");

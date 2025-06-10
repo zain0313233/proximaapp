@@ -5,7 +5,7 @@ import { useUser } from "@/context/UserContext";
 import Navbar from "@/componenet/navbar";
 
 const project = () => {
-  const { user, organization } = useUser();
+  const { user, organization,token } = useUser();
   const [formData, setFormData] = useState({
     projectName: "",
     organization_id: organization?.data.id || "",
@@ -40,7 +40,8 @@ const project = () => {
         payload,
         {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`
           }
         }
       );

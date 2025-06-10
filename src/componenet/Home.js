@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axiox from "axios";
 import { useUser } from "@/context/UserContext";
 const Home = () => {
-  const { user, accessToken } = useUser();
+  const { user, token } = useUser();
   const [taskss, setTaskss] = useState([]);
   console.log("user id is", user?.id);
   useEffect(() => {
@@ -12,14 +12,15 @@ const Home = () => {
         `http://localhost:3001/api/tasks/getUser/${user?.id}`,
         {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`
           }
         }
       );
       setTaskss(taskresponse.data.tasks);
     };
     featchData();
-  }, [user, accessToken]);
+  }, [user, token]);
   console.log("tasks are", taskss);
 
   const [tasks, setTasks] = useState({
@@ -60,7 +61,8 @@ const Home = () => {
       }, 
       {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         }
       }
     );

@@ -19,12 +19,12 @@ const Navbar = ({ setActiveComponent }) => {
   return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
 };
 
-const { user, accessToken } = useUser();
-// useEffect(() => {
-//     if (!user || !accessToken) {
-//       router.push('/login');
-//     }
-//   }, [user, accessToken, router]);
+const { user, token } = useUser();
+useEffect(() => {
+    if (!user || !token) {
+      router.push('/login');
+    }
+  }, [user, token, router]);
 
   const menuItems = [
     { name: "Dashboard", icon: <Home size={20} />, component: <AppHome /> },
