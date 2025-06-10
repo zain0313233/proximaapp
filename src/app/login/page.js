@@ -53,14 +53,14 @@ const Main = () => {
     }
   };
 
-  async function fetchOrganization(userId,accessToken) {
+  async function fetchOrganization(userId, accessToken) {
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/get-info/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
-             Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`
           }
         }
       );
@@ -72,11 +72,10 @@ const Main = () => {
       throw error;
     }
   }
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    let organization = null;
     const updatedFormData = {
       ...formData
     };
@@ -104,11 +103,11 @@ const Main = () => {
         }
       );
 
-      const { user,access_token} = response.data;
+      const { user, access_token } = response.data;
       const ownerid = user?.id;
-      const organization = await fetchOrganization(ownerid,access_token);
+      const organization = await fetchOrganization(ownerid, access_token);
 
-      console.log('organization is ',organization)
+      console.log("organization is ", organization);
 
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -229,15 +228,24 @@ const Main = () => {
               )}
             </button>
 
-            <div className="text-center">
-              <p className="text-gray-600">
-                Do Not have an account?
+            <div className="text-center text-sm text-gray-600 space-y-2">
+              <p>
+                Don’t have an account?
                 <a
-                  href="#"
+                  href="/signup"
                   className="text-blue-600 hover:text-blue-700 font-medium ml-1 hover:underline"
                 >
                   Sign Up
                 </a>
+              </p>
+              <p>
+                Forgot your password?
+                <button
+                  onClick={()=>{router.push("/forget-password")}}
+                  className="ml-1 text-blue-600 hover:text-blue-700 font-medium "
+                >
+                  Click here
+                </button>
               </p>
             </div>
           </div>
