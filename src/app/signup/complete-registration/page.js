@@ -6,7 +6,7 @@ import NavBar from "@/componenet/navbar";
 import { useRouter } from "next/navigation";
 
 const CompleteRegistration = () => {
-  const { user, accessToken } = useUser();
+  const { user, token } = useUser();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -48,10 +48,11 @@ function delay(ms) {
 
     try {
       const response = await axiox.post(
-        "http://localhost:3001/api/organizations/",payload,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/organizations/`,payload,
         {
           headers: {
-           'Content-Type': 'application/json'
+           'Content-Type': 'application/json',
+           Authorization: `Bearer ${token}`
           }
         }
       );

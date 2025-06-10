@@ -113,7 +113,7 @@ const Main = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/auth/signup`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`,
         payload,
         {
           headers: {

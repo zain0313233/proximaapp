@@ -9,7 +9,7 @@ const Home = () => {
   useEffect(() => {
     const featchData = async () => {
       const taskresponse = await axiox.get(
-        `http://localhost:3001/api/tasks/getUser/${user?.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/getUser/${user?.id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const Home = () => {
   
   try {
     const response = await axiox.put(
-      `http://localhost:3001/api/tasks/status/${draggedTask.id}`, 
+      `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/status/${draggedTask.id}`, 
       {
         status: targetColumn
       }, 

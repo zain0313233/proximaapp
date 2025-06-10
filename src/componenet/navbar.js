@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { useUser } from "@/context/UserContext";
 import { Settings, LogOut, CheckSquare, Home, Layers, BarChart2, X, Menu } from 'lucide-react'
+import axios from 'axios';
 import AppHome from "./Home";
 import Board from "./bord";
 
@@ -19,12 +20,33 @@ const Navbar = ({ setActiveComponent }) => {
   return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
 };
 
-const { user, token } = useUser();
+const { user, token ,logout } = useUser();
 useEffect(() => {
     if (!user || !token) {
       router.push('/login');
     }
   }, [user, token, router]);
+
+  const signout = async()=>{
+    try{
+      const response= await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signout`,{},
+        {
+          headers:{
+              Authorization: `Bearer ${token}`,
+             "Content-Type": "application/json"
+          }
+      }
+    )
+    if (response.status===200){
+      console.log('Signout Succesfully')
+      logout();
+      router.push('/login');
+    }
+   
+    }catch(error){
+    console.error("Error creating project:", error);    
+    }
+  }
 
   const menuItems = [
     { name: "Dashboard", icon: <Home size={20} />, component: <AppHome /> },
@@ -83,8 +105,10 @@ SignUp
         <button className="bg-white rounded-full  text-black font-semibold w-auto h-auto flex text-sm items-center justify-center hover:bg-gray-200 p-1">
            {getInitials(user?.name)}
         </button>
-        <button className="hover:text-blue-400 transition-colors">
-          <LogOut className="w-5 h-5" />
+        <button 
+        onClick={signout}
+        className="hover:text-blue-400 transition-colors">
+          <LogOut className="w-5 h-5"/>
         </button>
         <div className="md:hidden">
           <button 

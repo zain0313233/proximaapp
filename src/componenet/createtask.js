@@ -5,7 +5,7 @@ import { CirclePlus, X } from "lucide-react";
 import axios from "axios";
 const Createtask = () => {
   const [isModelopen, setIsModelOpen] = useState(false);
-  const { user } = useUser();
+  const { user,token} = useUser();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -32,9 +32,10 @@ const Createtask = () => {
         dueDate: formData.dueDate,
         created_by : user?.id || ""
       };
-      const response = await axios.post("http://localhost:3001/api/tasks/create-Task", payload, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/create-Task`, payload, {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         }
       });
       if (response.status === 201) {
