@@ -1,6 +1,10 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { useUser } from "@/context/UserContext";
+import { createClient } from '@supabase/supabase-js'
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('')
@@ -13,27 +17,27 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   useEffect(() => {
-  const { hash } = window.location;
-  const params = new URLSearchParams(hash.substring(1));
-  const access_token = params.get("access_token");
-  const type = params.get("type");
+    const { hash } = window.location;
+    const params = new URLSearchParams(hash.substring(1));
+    const access_token = params.get("access_token");
+    const type = params.get("type");
 
-  if (type === "recovery" && access_token) {
-    
-    supabase.auth.setSession({
-      access_token,
-      refresh_token: params.get("refresh_token") || "",
-    }).then(({ error }) => {
-      if (error) {
-        console.error("Error restoring session", error);
-        setError("Invalid or expired reset link. Please try again.");
-      }
-    });
-  } else {
-    setError("Invalid reset link. Please request a new password reset.");
-  }
-}, []);
-
+    if (type === "recovery" && access_token) {
+      setAccessToken(access_token); 
+      
+      supabase.auth.setSession({
+        access_token,
+        refresh_token: params.get("refresh_token") || "",
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Error restoring session", error);
+          setError("Invalid or expired reset link. Please try again.");
+        }
+      });
+    } else {
+      setError("Invalid reset link. Please request a new password reset.");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -52,27 +56,19 @@ const ResetPassword = () => {
     setError('')
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/update-password`, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          password: password
-        })
+     
+      const { data, error } = await supabase.auth.updateUser({
+        password: password
       })
 
-      const data = await response.json()
-
-      if (response.ok) {
-        setSuccess(true)
-        setTimeout(() => {
-          window.location.href = '/login'
-        }, 3000)
-      } else {
-        throw new Error(data.message || 'Failed to reset password')
+      if (error) {
+        throw new Error(error.message)
       }
+
+      setSuccess(true)
+      setTimeout(() => {
+        window.location.href = '/login'
+      }, 3000)
     } catch (error) {
       console.error("Error:", error)
       setError(error.message || 'Something went wrong. Please try again.')
@@ -186,7 +182,7 @@ const ResetPassword = () => {
 
             <button
               onClick={handleSubmit}
-              disabled={isLoading || !password || !confirmPassword || !accessToken}
+              disabled={isLoading || !password || !confirmPassword}
               className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
