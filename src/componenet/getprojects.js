@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
+import ProjectPopup from "../componenet/createproject";
 
 const GetProject = ({ selectedOrganization }) => {
   const { user, token } = useUser();
+
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,7 +82,7 @@ const GetProject = ({ selectedOrganization }) => {
 
   if (loading) {
     return (
-      <section className="bg-gray-900 h-screen w-screen flex items-center justify-center">
+      <section className="bg-gray-900 h-screen w-auto flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <div className="text-white text-lg">Loading projects...</div>
@@ -91,7 +93,7 @@ const GetProject = ({ selectedOrganization }) => {
 
   if (error) {
     return (
-      <section className="bg-gray-900 h-screen w-screen flex items-center justify-center">
+      <section className="bg-gray-900 h-screen w-auto flex items-center justify-center">
         <div className="text-center bg-gray-800 p-8 rounded-xl border border-red-500">
           <div className="text-red-400 text-xl mb-2">⚠️ Error</div>
           <div className="text-red-300">{error}</div>
@@ -107,18 +109,21 @@ const GetProject = ({ selectedOrganization }) => {
   }
 
   return (
-    <section className="bg-gray-900 min-h-screen w-screen p-3">
+    <section className="bg-gray-900 min-h-screen w-auto p-3">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-xl font-bold text-white mb-2">
-            Projects Dashboard
-          </h1>
-          <p className="text-gray-400">
-            {selectedOrganization ? 
-              `Managing projects for ${selectedOrganization.name}` : 
-              "Select an organization to view projects"
-            }
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-white mb-2">
+              Projects Dashboard
+            </h1>
+            <p className="text-gray-400">
+              {selectedOrganization ? 
+                `Managing projects for ${selectedOrganization.name}` : 
+                "Select an organization to view projects"
+              }
+            </p>
+          </div>
+          <ProjectPopup selectedOrganization={selectedOrganization}/>
         </div>
 
         {!Array.isArray(projects) || projects.length === 0 ? (
